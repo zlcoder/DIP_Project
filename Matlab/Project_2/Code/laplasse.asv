@@ -1,2 +1,0 @@
-w = [1 1 1;1 -8 1;1 1 1];
-pic = imread('../resource/skeleton_orig.tif');
