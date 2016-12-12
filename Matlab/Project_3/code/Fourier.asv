@@ -1,0 +1,38 @@
+picture = imread('../Resource/characters_test_pattern.tif');
+%padded the picture size
+subplot(231)
+imshow(picture);
+title('Test pattern');
+[width,height]=size(picture);
+paddedWidth = width*2;
+paddedHeight = height*2;
+%make the Fourier transform
+F = fftshift(fft2(picture,paddedWidth,paddedHeight));
+%Ideal Filter
+%low pass
+midWidth = round(paddedWidth/2);
+midHeight = round(paddedHeight/2);
+D = [10,30,60,160,460];
+for k = 1:5
+    D0 = D(k);
+    idealLow_image = zeros(paddedWidth,paddedHeight);
+    fprintf('now is runing the parameter %d',D0);
+for i=1:paddedWidth
+    for j=1:paddedHeight
+        picDis = sqrt((i-midWidth).^2+(j-midHeight).^2);
+        if picDis <=D0
+            h=1;
+        else
+            h=0;
+        end
+        idealLow_image(i,j) = h*F(i,j);
+    end
+end
+idealLow_image = uint8(real(ifft2(ifftshift(idealLow_image))));
+idealLow_image = idealLow_image(1:width,1:height);
+subplot(2, 3 ,k+1);
+imwirte(idealLow_image,'../result/')
+imshow(idealLow_image,[]);
+title(['Radius is ' num2str(D0)])
+end
+print('-dpng','ILPF.png');
